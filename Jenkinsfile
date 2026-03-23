@@ -84,32 +84,3 @@ pipeline {
         }
     }
 }
-it revert --no-edit ${env.GIT_COMMIT}
-                                git push "${fullUrl}" master
-                            """
-                        }
-                        error("Build Reverted: Pass rate ${actual}% was too low (Threshold: ${limit}%).")
-                    } else {
-                        echo "PASSED: Pass rate ${actual}% meets threshold."
-                    }
-                }
-            }
-        
-        //test
-
-                error("Build Reverted: Pass rate ${actual}% was too low (Threshold: ${limit}%).")
-            } else {
-                echo "PASSED: Pass rate ${actual}% meets threshold."
-            }
-        }
-    }
-}
-
-        stage('Deliver') {
-            steps {
-                bat "mvn help:evaluate -Dexpression=project.version -DtestRate=${env.ACTUAL_PASS_PERCENT}"
-            
-            }
-        }
-    }
-}
