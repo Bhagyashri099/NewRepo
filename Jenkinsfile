@@ -7,7 +7,7 @@ pipeline {
     environment {
         PASS_THRESHOLD = 90.0
         GIT_CREDS = 'Admin'
-        REPO_URL = 'github.com/Bhagyashri099/Seleniumproject.git'
+        REPO_URL = ' https://github.com/Bhagyashri099/NewRepo.git'
     }
 
     
