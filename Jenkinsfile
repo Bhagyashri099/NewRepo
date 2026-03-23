@@ -59,7 +59,7 @@ pipeline {
                                                  usernameVariable: 'GIT_USERNAME')]) {
                     
                     
-              def remoteUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.REPO_URL.replaceFirst('^https://', '')}"
+              def remoteUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.REPO_URL}"
 
           bat '''
             @echo off
