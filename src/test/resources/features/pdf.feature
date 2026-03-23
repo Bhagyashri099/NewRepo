@@ -1,5 +1,5 @@
 Feature: PDF Detail Validation
-  @ignore @skip_setup1
+  @skip_setup1
  Scenario: Validate text, font, and color of multi-page PDF
  Given user has the PDF file "sample.pdf"
  When user validates all pages of the PDF
