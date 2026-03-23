@@ -63,9 +63,7 @@ pipeline {
 
           bat '''
             @echo off
-            git reset --hard
-                        git clean -fd
-             git fetch "''' + remoteUrl + '''" master
+            git fetch "${remoteUrl}" master
             git checkout master
             git reset --hard FETCH_HEAD
 
