@@ -58,22 +58,27 @@ pipeline {
                                                  passwordVariable: 'GIT_PASSWORD', 
                                                  usernameVariable: 'GIT_USERNAME')]) {
                     
-          def remoteUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.REPO_URL.replaceFirst('^https://', '')}"
+            def rawRepo = env.REPO_URL.replaceFirst('^https?://', '')
+                    def fullUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${rawRepo}"
 
           bat '''
             @echo off
-            git clean -fdx
-    git reset --hard HEAD
+             git reset --hard
+                        git clean -fd
+                        
+                          git fetch "${fullUrl}" master
+                          
+                  
             
-             git fetch "${remoteUrl}" master
-            git checkout master
-            git reset --hard FETCH_HEAD
+            git checkout -B master
+                        git reset --hard FETCH_HEAD
 
             git config user.email "budchane24@gmail.com"
             git config user.name "Bhagyashri099"
 
 git revert --no-edit ''' + env.GIT_COMMIT + '''
-                        git push "''' + remoteUrl + '''" master
+                        git push "${fullUrl}" master
+
           '''
         }
         //test
