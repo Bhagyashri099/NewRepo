@@ -45,41 +45,51 @@ pipeline {
         }
 
         stage('Quality Gate & Revert') {
-    steps {
-        script {
-            
-            double actual = env.ACTUAL_PASS_PERCENT.toDouble()
-            double limit = env.PASS_THRESHOLD.toDouble()
+            steps {
+                script {
+                    double actual = env.ACTUAL_PASS_PERCENT.toDouble()
+                    double limit = env.PASS_THRESHOLD.toDouble()
 
-            if (actual < limit) {
-                echo "REVERTING: Pass rate ${actual}% is below threshold ${limit}%."
+                    if (actual < limit) {
+                        echo "REVERTING: Pass rate ${actual}% is below threshold ${limit}%."
 
-                withCredentials([usernamePassword(credentialsId: "${GIT_CREDS}", 
-                                                 passwordVariable: 'GIT_PASSWORD', 
-                                                 usernameVariable: 'GIT_USERNAME')]) {
-                    
-            def rawRepo = env.REPO_URL.replaceFirst('^https?://', '')
-                    def fullUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${rawRepo}"
+                        withCredentials([usernamePassword(credentialsId: "${GIT_CREDS}", 
+                                                         passwordVariable: 'GIT_PASSWORD', 
+                                                         usernameVariable: 'GIT_USERNAME')]) {
+                            
+                            // URL व्यवस्थित तयार करा (https:// काढले तरी चालेल)
+                            def rawRepo = env.REPO_URL.replaceFirst('^https?://', '')
+                            def fullUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${rawRepo}"
 
-          bat '''
-            @echo off
-             git reset --hard
-                        git clean -fd
-                        
-                          git fetch "${fullUrl}" master
-                          
-                  
-            
-            git checkout -B master
-                        git reset --hard FETCH_HEAD
+                            // महत्त्वाचे: 'bat' साठी ट्रिपल डबल-कोट्स (""") वापरा
+                            bat """
+                                @echo off
+                                :: १. सर्व लोकल बदल आणि नको असलेल्या फाईल्स पूर्णपणे पुसून टाका
+                                git reset --hard
+                                git clean -fd
+                                
+                                :: २. रिमोटवरून लेटेस्ट कोड आणा (fullUrl मधील टोकन वापरून)
+                                git fetch "${fullUrl}" master
+                                
+                                :: ३. लोकल मास्टरला रिमोट मास्टरशी तंतोतंत मॅच करा
+                                git checkout -B master
+                                git reset --hard FETCH_HEAD
 
-            git config user.email "budchane24@gmail.com"
-            git config user.name "Bhagyashri099"
+                                :: ४. गिट कॉन्फिगरेशन
+                                git config user.email "budchane24@gmail.com"
+                                git config user.name "Bhagyashri099"
 
-git revert --no-edit ''' + env.GIT_COMMIT + '''
-                        git push "${fullUrl}" master
-
-          '''
+                                :: ५. रिव्हर्ट करा आणि पुश करा
+                                git revert --no-edit ${env.GIT_COMMIT}
+                                git push "${fullUrl}" master
+                            """
+                        }
+                        error("Build Reverted: Pass rate ${actual}% was too low (Threshold: ${limit}%).")
+                    } else {
+                        echo "PASSED: Pass rate ${actual}% meets threshold."
+                    }
+                }
+            }
         }
         //test
 
