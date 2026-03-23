@@ -64,22 +64,22 @@ pipeline {
                             // महत्त्वाचे: 'bat' साठी ट्रिपल डबल-कोट्स (""") वापरा
                             bat """
                                 @echo off
-                                :: १. सर्व लोकल बदल आणि नको असलेल्या फाईल्स पूर्णपणे पुसून टाका
+                                
                                 git reset --hard
                                 git clean -fd
                                 
-                                :: २. रिमोटवरून लेटेस्ट कोड आणा (fullUrl मधील टोकन वापरून)
+                               
                                 git fetch "${fullUrl}" master
                                 
-                                :: ३. लोकल मास्टरला रिमोट मास्टरशी तंतोतंत मॅच करा
+                                
                                 git checkout -B master
                                 git reset --hard FETCH_HEAD
 
-                                :: ४. गिट कॉन्फिगरेशन
+                                
                                 git config user.email "budchane24@gmail.com"
                                 git config user.name "Bhagyashri099"
 
-                                :: ५. रिव्हर्ट करा आणि पुश करा
+                                
                                 git revert --no-edit ${env.GIT_COMMIT}
                                 git push "${fullUrl}" master
                             """
@@ -90,7 +90,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
         //test
 
                 error("Build Reverted: Pass rate ${actual}% was too low (Threshold: ${limit}%).")
