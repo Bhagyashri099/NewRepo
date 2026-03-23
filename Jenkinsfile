@@ -61,18 +61,18 @@ pipeline {
                     
               def remoteUrl = "https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.REPO_URL.replaceFirst('^https://', '')}"
 
-          bat """
+          bat '''
             @echo off
             git fetch "${remoteUrl}" master
             git checkout master
             git reset --hard FETCH_HEAD
 
-            git config user.email "jenkins@local"
-            git config user.name "Jenkins"
+            git config user.email "budchane24@gmail.com"
+            git config user.name "Bhagyashri099"
 
-            git revert --no-edit ${env.GIT_COMMIT}
-            git push "${remoteUrl}" master
-          """
+git revert --no-edit ''' + env.GIT_COMMIT + '''
+                        git push "''' + remoteUrl + '''" master
+          '''
         }
         //test
 
