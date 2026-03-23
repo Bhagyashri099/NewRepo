@@ -75,7 +75,6 @@ public class LoginPage
 			System.out.println(mob_no);
 			//System.out.println(mob_no);
 			//changes in login page
-			//Login page with changes
 			
 			
 			
